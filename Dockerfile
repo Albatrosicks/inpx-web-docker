@@ -17,7 +17,7 @@ RUN curl -L -o inpx-web-latest.zip $(curl -s https://api.github.com/repos/bookpa
     && mv inpx-web /usr/bin/ \
     && rm -rf inpx-web-latest.zip readme.html
 
-RUN apk del curl unzip && apk --no-cache clean --purge
+RUN apk del curl unzip && apk cache clean
 
 EXPOSE $PORT
 
