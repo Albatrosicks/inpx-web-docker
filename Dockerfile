@@ -1,8 +1,15 @@
-FROM nginx:alpine
+FROM alpine:latest
+
+# Port
+ENV PORT=12380
+# Library path
+ENV LIB_DIR=/library
+# .inpx file path
+ENV INPX_FILE_PATH=/library/local.inpx
+# app data  path 
+ENV ADD_DIR=/app/
 
 RUN apk add --no-cache curl
-
-WORKDIR /usr/share/nginx/html
 
 # Download and extract inpx-web binary
 RUN curl -L -o inpx-web-latest.zip $(curl -s https://api.github.com/repos/bookpauk/inpx-web/releases/latest | grep -o "browser_download_url.*linux\.zip" | sed 's/.*https\(.*linux\.zip\).*/https\1/' | head -n 1) \
@@ -12,8 +19,7 @@ RUN curl -L -o inpx-web-latest.zip $(curl -s https://api.github.com/repos/bookpa
 
 RUN apk del curl && apk autoremove
 
-COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE $PORT
 
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# working directory: .inpx-web
+CMD ["inpx-web", "--port=$PORT", "--app-dir=$APP_DIR", "--lib-dir=$LIB_DIR", "--inpx=$INPX_FILE_PATH"]
